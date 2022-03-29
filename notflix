@@ -15,8 +15,8 @@ input() {
 
 get_url() {
 	search=$(echo "${name}" | sed 's/ /\%20/g')
-	curl -s "$baseurl/search/${search}" > "$HOME/.cache/url.html"
-	magnet=$(cat "$HOME/.cache/url.html" | grep -E 'magnet\:\?' | sed 's/href\=/ /g' | awk '{print $2}' | sed 's/"/ /g' | head -n 1 | sed 's/ //g' )
+	#curl -s "$baseurl/search/${search}" > "$HOME/.cache/url.html"
+	magnet=$(curl -s "$baseurl/search/${search}" | grep -Eo "magnet:\?xt=urn:btih:[a-zA-Z0-9]*" | head -n 1)
 	play
 }
 
@@ -32,6 +32,8 @@ play() {
 ###########
 # Startup #
 ###########
+
+# defaults 
 
 baseurl="https://thepiratebay.party"
 name=$(echo "$*" | sed 's/ /\%20/g')
