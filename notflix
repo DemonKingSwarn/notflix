@@ -1,12 +1,31 @@
 #!/usr/bin/env sh
 
-#input() {
-#	printf "Search Torrent: " ; read query
-#	name=$(echo "$query" | sed 's/ /\%20/g')
-#}
+#########
+# Input #
+#########
 
-name=$(echo "$*" | sed 's/ /\%20/g')
-curl -s https://thepiratebay.party/search/${name}/1/99/200 > "$HOME/.cache/url.html"
-magnet=$(cat "$HOME/.cache/url.html" | grep -E 'magnet\:\?' | sed 's/href\=/ /g' | awk '{print $2}' | sed 's/"/ /g' | head -n 1 | sed 's/ //g' )
-peerflix -l -k $magnet
+input() {
+	printf "Search Torrent: " ; read -r name
+	get_url
+}
 
+##################
+# URL Processing #
+##################
+
+get_url() {
+	search=$(echo "${name}" | sed 's/ /\%20/g')
+	curl -s https://thepiratebay.party/search/${search}/1/99/200 > "$HOME/.cache/url.html"
+	magnet=$(cat "$HOME/.cache/url.html" | grep -E 'magnet\:\?' | sed 's/href\=/ /g' | awk '{print $2}' | sed 's/"/ /g' | head -n 1 | sed 's/ //g' )
+	play
+}
+
+########
+# Play #
+########
+
+play() {
+	peerflix -l -k ${magnet}
+}
+
+input
