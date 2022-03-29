@@ -15,7 +15,7 @@ input() {
 
 get_url() {
 	search=$(echo "${name}" | sed 's/ /\%20/g')
-	curl -s https://thepiratebay.party/search/${search}/1/99/0 > "$HOME/.cache/url.html"
+	curl -s "$baseurl/search/${search}" > "$HOME/.cache/url.html"
 	magnet=$(cat "$HOME/.cache/url.html" | grep -E 'magnet\:\?' | sed 's/href\=/ /g' | awk '{print $2}' | sed 's/"/ /g' | head -n 1 | sed 's/ //g' )
 	play
 }
@@ -33,9 +33,10 @@ play() {
 # Startup #
 ###########
 
+baseurl="https://thepiratebay.party"
 name=$(echo "$*" | sed 's/ /\%20/g')
 
-# checks is name variable is empty or not
+# checks if name variable is empty or not
 
 if [ ! -z "$name" ] ; then
 	get_url
