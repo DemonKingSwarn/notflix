@@ -28,4 +28,8 @@ play() {
 	peerflix -l -k ${magnet}
 }
 
+###########
+# Startup #
+###########
+
 input
