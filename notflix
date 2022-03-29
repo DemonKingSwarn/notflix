@@ -15,7 +15,6 @@ input() {
 
 get_url() {
 	search=$(echo "${name}" | sed 's/ /\%20/g')
-	#curl -s "$baseurl/search/${search}" > "$HOME/.cache/url.html"
 	magnet=$(curl -s "$baseurl/search/${search}" | grep -Eo "magnet:\?xt=urn:btih:[a-zA-Z0-9]*" | head -n 1)
 	play
 }
