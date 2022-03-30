@@ -35,7 +35,7 @@ play() {
 # defaults 
 
 baseurl=$(curl -s -L -o /dev/null -w "%{url_effective}\n" https://thepiratebay.party)
-name=$(echo "$*" | sed 's/ /\%20/g')
+name=$(echo "$*") #| sed 's/ /\%20/g')
 
 # checks if name variable is empty or not
 
