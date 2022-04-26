@@ -14,39 +14,31 @@ input() {
 ##################
 
 get_url() {
-	check
 	search=$(echo "${name}" | sed 's/ /\%20/g')
 	magnet=$(curl -s "$baseurl/search/${search}/1/99/200" | grep -Eo "magnet:\?xt=urn:btih:[a-zA-Z0-9]*" | head -n 1)
-	play
+	choose
 }
 
 
-########
-# Play #
-########
+##########
+# choice #
+##########
 
-play() {
+stream() {
 	peerflix -k "${magnet}"
 }
 
-###############
-# Text Output #
-###############
+download() {
+	peerflix "${magnet}"
+}
 
-check() {
-	isPorn="$(echo "${name}" | grep porn)"
-	if [ ! -z "$isPorn" ] ; then
-		die "Please don't search porn."
+choose() {
+	choice="$( printf "stream\ndownload" | fzf)"
+	if [ "$choice" = "stream" ] ; then
+		stream
+	else
+		download
 	fi
-}
-
-die() {
-	err "$*"
-	exit 1
-}
-
-err() {
-	printf "\033[1;31m%s\033[0m\n" "$*" >&2
 }
 
 ###########
@@ -59,12 +51,6 @@ baseurl=$(curl -s -L -o /dev/null -w "%{url_effective}\n" https://thepiratebay.p
 name=$(echo "$*") #| sed 's/ /\%20/g')
 
 # checks if name variable is empty or not
-
-if [ ! -z "$name" ] ; then
-	get_url
-fi
-
-if [ -z "$name" ] ; then 
-	input
-fi
+[ -n "$name" ] && get_url
+[ ! -n "$name" ] && input
 
