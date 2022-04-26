@@ -12,6 +12,7 @@ For scraping script use simple gnu utils like sed, awk, paste, cut.
 ## Requirements
 
 * [peerflix](https://github.com/mafintosh/peerflix) - A tool to stream torrent. `sudo npm install peerflix -g`
+* [fzf](https://github.com/junegunn/fzf) - For selection screen.
 
 ## Installation
 
