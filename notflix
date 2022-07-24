@@ -30,6 +30,7 @@ dep_ch() {
     for dep; do
         if ! command -v "$dep" >/dev/null ; then
             err "Program \"$dep\" not found. Please install it.\n"
+            [ "$dep" = "aria2c" ] && printf "%s\n" "To install aria2 do <your package manager> install aria2."
             die
         fi
     done
@@ -78,4 +79,4 @@ else
     get_url
 fi
 
-dep_ch "sed" "curl" "grep" "peerflix" "aria2"
+dep_ch "sed" "curl" "grep" "peerflix" "aria2c"
