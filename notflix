@@ -10,8 +10,10 @@ c_magenta="\033[1;35m"
 c_cyan="\033[1;36m"
 c_reset="\033[0m"
 
+download_dir="$HOME/Downloads"
+
 config_dir="${XDG_CONFIG_HOME:-$HOME/.config}"
-[ -e "$config_dir/notflix" ] && . "$config_dir/notflix"
+[ -e "$config_dir/notflix/notflixrc" ] && . "$config_dir/notflix/notflixrc"
 
 err() {
     printf "${c_red}%s${c_reset}\n" "$*" >&2
@@ -30,8 +32,10 @@ dep_ch() {
     for dep; do
         if ! command -v "$dep" >/dev/null ; then
             err "Program \"$dep\" not found. Please install it.\n"
-            [ "$dep" = "aria2c" ] && printf "%s\n" "To install aria2 do <your package manager> install aria2."
-            die
+            if [ "$dep" = "peerflix" ] 
+            then
+                die "To install aria2 do npm install peerflix -g."
+            fi
         fi
     done
 }
@@ -39,7 +43,12 @@ dep_ch() {
 get_url() {
     printf "\33[2K\r${c_cyan}Searching query..\n"
 	search=$(echo "${name}" | sed 's/ /\%20/g')
-	magnet=$(curl -s "$baseurl/search/${search}/1/99/200" | grep -Eo "magnet:\?xt=urn:btih:[a-zA-Z0-9]*" | head -n 1)
+    torrent=$(curl -s "$baseurl/search/${search}/1/99/200" | grep -Eo "/torrent/[0-9]{8}/[a-zA-Z0-9._-]*" | head -n 1)
+	magnet=$(curl -s "$baseurl$torrent" | grep -Eo "magnet:\?xt=urn:btih:[a-zA-Z0-9]*" | head -n 1)
+    if [ -z "$magnet" ]
+    then
+        die "Can't find the show/movie!"
+    fi
     choose
 }
 
@@ -58,18 +67,18 @@ choose() {
     case $choice in
         s) stream ;;
         d) download ;;
-        q) exit 1 ;;
-        *) err "Invalid choice" ;;
+        q) exit 0 ;;
+        *) err "Invalid choice" && exit 1 ;;
     esac
 }
 
 trap "exit 0" INT HUP
+
 baseurl="$(curl -s -L -o /dev/null -w "%{url_effective}\n" https://thepiratebay.party)"
-download_dir="$HOME/Downloads"
 name=$(printf "$*")
 
 input() {
-    [ -z "$*" ] && printf "Search: " && read -r name
+    printf "Search: " && read -r name
     get_url
 }
 
