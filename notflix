@@ -43,7 +43,7 @@ get_url() {
 }
 
 stream() {
-	peerflix -k "${magnet}"
+	peerflix -l -k "${magnet}"
 }
 
 download() {
@@ -52,7 +52,6 @@ download() {
 }
 
 choose() {
-    clear
     printf "${c_red}(s) stream${c_reset}\n${c_yellow}(d) download${c_reset}\n${c_blue}(q) quit${c_reset}\n"
 	printf "${c_magenta}>${c_reset} " && read -r choice
     case $choice in
@@ -79,4 +78,4 @@ else
     get_url
 fi
 
-dep_ch "sed" "curl" "grep" "peerflix"
+dep_ch "sed" "curl" "grep" "peerflix" "aria2"
