@@ -26,6 +26,15 @@ inf() {
     printf "${c_green}%s${c_reset}\n" "$1" "$2"
 }
 
+dep_ch() {
+    for dep; do
+        if ! command -v "$dep" >/dev/null ; then
+            err "Program \"$dep\" not found. Please install it.\n"
+            die
+        fi
+    done
+}
+
 get_url() {
     printf "\33[2K\r${c_cyan}Searching query..\n"
 	search=$(echo "${name}" | sed 's/ /\%20/g')
@@ -69,3 +78,5 @@ if [ -z "$name" ] ; then
 else
     get_url
 fi
+
+dep_ch "sed" "curl" "grep" "peerflix"
